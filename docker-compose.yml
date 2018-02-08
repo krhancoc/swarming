@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  retail:
+    image: kehancock/simple-app
+    ports:
+      - "8080:8080"
+    links:
+      - mongo
+  mongo:
+    image: mongo
