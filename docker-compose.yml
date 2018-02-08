@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   retail:
-    image: khancock/simple-app
+    image: kghancock/simple-app
     ports:
       - "8080:8080"
     links:
@@ -13,6 +13,8 @@ services:
           - node.hostname == vm0
   mongo:
     image: mongo
+    ports:
+      - "27017:27017"
     deploy:
       replicas: 1
       placement:
