@@ -6,5 +6,15 @@ services:
       - "8080:8080"
     links:
       - mongo
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == vm0
   mongo:
     image: mongo
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == aws01
