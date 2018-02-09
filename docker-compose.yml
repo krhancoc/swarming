@@ -10,7 +10,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == vm0
+          - node.hostname == aws01
   mongo:
     image: mongo
     ports:
@@ -19,4 +19,4 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == aws01
+          - node.hostname == vm0
