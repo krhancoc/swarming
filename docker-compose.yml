@@ -4,8 +4,6 @@ services:
     image: khancock/simple-app
     ports:
       - "8080:8080"
-    links:
-      - mongo
     deploy:
       replicas: 1
       placement:

@@ -8,5 +8,12 @@ docker-machine create --driver google \
   --google-tags docker-swarm \
   vm0
 
+nc -zv IP PORT # CHECKS CONNECTIONS ARE OPEN
+
+
+
 
 ```
+
+## Note
+Its very important that you use the addvertise addr flag and set it to the external IP's of the VM for BOTH JOIN AND INIT.
