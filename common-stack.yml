@@ -7,8 +7,7 @@ services:
     deploy:
       replicas: 3
     networks:
-      - net
+      - dev
 networks:
-  net:
-    driver: overlay
-    attachable: true
+  dev:
+    external: true

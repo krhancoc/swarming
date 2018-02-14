@@ -58,6 +58,16 @@ remove_swarm() {
             docker-machine rm $machine -f
         fi
     done
+
+    docker swarm leave -f
+}
+
+#Add own docker daemon as a manager!
+add_self() {
+
+    TOKEN=$(docker-machine ssh manager0 -- docker swarm join-token manager -q)
+    ADDR=$(docker-machine ip manager0):2377
+    docker swarm join --token $TOKEN $ADDR
 }
 
 re="^[1-9]$"
@@ -68,9 +78,12 @@ then
     else
         create_swarm $2
     fi
-elif [[ $1 == "rm" ]]
+elif [[ $1 == "rm" ]];
 then
     remove_swarm
+elif [[ $1 == "join" ]];
+then
+    add_self
 else
     echo "Couldn't recognize command  -- $1"
 fi

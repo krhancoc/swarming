@@ -5,7 +5,7 @@ services:
       - "8080:8080"
     build: .
     networks:
-      - common_net
+      - dev
 networks:
-  common_net:
+  dev:
     external: true
