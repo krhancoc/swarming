@@ -24,12 +24,12 @@ But in terms of a dev environment one could possibly start a swarm of VM's in th
 
 ### Notes for this idea
 #### Docker for Mac/Windows
-Mac and Windows currently wrap their docker daemon in an unreachable ip, so if you have some swarm deployed on the swarm you will not be able to attach your machine to it.  A currently work around is using docker-machine just create a "default" machine and using `eval $(docker-machine env default)` you can use this machine as your home base for all things docker.  You can then add this machine to your swarm.
+Mac and Windows currently wrap their docker daemon in an unreachable ip, so if you have some swarm deployed on the swarm you will not be able to attach your machine to it.  A currently work around is using docker-machine just create a "default" machine and using `eval $(docker-machine env default)` you can use this machine as your home base for all things docker.  You can then add this machine to your swarm as a worker.  I stress a worker -- although not confirmed just yet, but if you add it as a Manager, then you will add to the number of units that are required for the election process in Swarms internal consensus algorithm.  Meaning, if you shut off your computer, you may put the swarm into a state of being out of service as by shutting of your computer you could reduce the number of managers to less then half, this would cause the swarm not able to elect leaders. 
 
 #### Networking - [Info](https://docs.docker.com/compose/networking/)
-Docker swarm relies on its overlay network for service discovery, and for the machines to talk to each other.  The problem that I ran across is that workers do not have access networks that don't specifically effect them.  Meaning, that a worker does not know of any network in the swarm until a service has been deployed that specifically uses them as a node to host a container.
+Docker swarm relies on its overlay network for service discovery, and for the machines to talk to each other.  The problem that I ran across is that workers do not have access networks that don't specifically effect them.  Meaning, that a worker does not know of any network in the swarm until a service has been deployed that specifically uses them as a node to host a container. [See Issue Here](https://github.com/moby/moby/issues/25456#issuecomment-238083965)
 
-To get around this you can Deploy a dummy server or container on every server (Notice global deployment of a mongo instance in the common-stack.yml file).
+
 
 #### Labels are important!
 To make sure that this common stack of services that you are deploying to the swarm doesnt start deploying containers on your dev's machines, make sure to label your machines or nodes with some label and use docker swarm's constraints to make sure that services are only deployed on nodes with this label!  I used common for example within run.sh:
