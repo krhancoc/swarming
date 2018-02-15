@@ -7,7 +7,7 @@ services:
     deploy:
       mode: global
     networks:
-      - dev
+      - development
 networks:
-  dev:
+  development:
     external: true

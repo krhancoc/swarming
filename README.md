@@ -17,10 +17,10 @@ To start up a swarm use the command:
 ```
 This will create a basic swarm with 1 manager and 2 workers.  Workers are systems that can only be as well... workers.  They do not particpate in the Elective processes or belong to the "Quorum". I would highly suggest those to look at the [Raft Algorithm](https://raft.github.io/) which runs the Docker swarm.  Its quite an easy read and the Algorithm itself was designed for understandability.
 
-## Discovery Services -- A Development common swarm.
+## Discovery Services -- A Development Swarm.
 I have been experimenting with the discovery services offered by the new internal swarm for a bit now and found it quite amazing and easy to use. Find information [here](https://docs.docker.com/docker-cloud/apps/service-links/#using-service-links-for-service-discovery).  
 
-But in terms of a dev environment one could possibly start a swarm of VM's in the cloud or wherever you'd like (using docker-machine and your cloud provider as a driver).  They could then add their own developer machine to this swarm as a worker, then can use things like basic compose files deploy your in development applications into the network of the swarm but only on your machine.  Why? Service Discovery!  By plugging into the service discovery of the swarm you can immediatly have access to the other services within the swarm without having to deploy or set them up yourself.  
+But in terms of a dev environment one could possibly start a swarm of VM's in the cloud or wherever you'd like ([using docker-machine and your cloud provider as a driver](https://docs.docker.com/machine/reference/create/#accessing-driver-specific-flags-in-the-help-text)).  They could then add their own developer machine to this swarm as a worker, then can use things like basic compose files deploy your in development applications into the network of the swarm but only on your machine.  Why? Service Discovery!  By plugging into the service discovery of the swarm you can immediatly have access to the other services within the swarm without having to deploy or set them up yourself.
 
 ### Notes for this idea
 #### Docker for Mac/Windows
@@ -29,10 +29,7 @@ Mac and Windows currently wrap their docker daemon in an unreachable ip, so if y
 #### Networking - [Info](https://docs.docker.com/compose/networking/)
 Docker swarm relies on its overlay network for service discovery, and for the machines to talk to each other.  The problem that I ran across is that workers do not have access networks that don't specifically effect them.  Meaning, that a worker does not know of any network in the swarm until a service has been deployed that specifically uses them as a node to host a container.
 
-To get around this you can either:
-
-1. Overwrite the default ingress network to be attachable (Attachability is what allows us to use the internal service discovery) [Here](https://docs.docker.com/network/overlay/#customize-the-default-ingress-network)
-2. Deploy a dummy server or container on every server (Notice global deployment of a mongo instance in the common-stack.yml file).
+To get around this you can Deploy a dummy server or container on every server (Notice global deployment of a mongo instance in the common-stack.yml file).
 
 #### Labels are important!
 To make sure that this common stack of services that you are deploying to the swarm doesnt start deploying containers on your dev's machines, make sure to label your machines or nodes with some label and use docker swarm's constraints to make sure that services are only deployed on nodes with this label!  I used common for example within run.sh:
