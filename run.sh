@@ -12,7 +12,7 @@ create_swarm_worker() {
 create_swarm() {
 
     echo "Creating Swarm Manager"
-    docker-machine create manager0
+    docker-machine create manager0 
 
     docker-machine ssh manager0 -- \
         docker swarm init --advertise-addr $(docker-machine ip manager0)
@@ -34,17 +34,9 @@ create_swarm() {
         done
     if [ $FAIL == 0 ];
     then
-        echo "Completed"
+        echo "All machines made successfully..."
     else
-        echo "A failure occured while spawning workers, removing created machines"
-        re='^worker[1-9]$|^manager[0-9]$'
-        for machine in `docker-machine ls -q`
-        do
-            if [$machine ~= re];
-            then
-                docker-machine rm $machine -f
-            fi
-        done
+        remove_swarm
     fi
 }
 
@@ -62,10 +54,23 @@ remove_swarm() {
     docker swarm leave -f
 }
 
+add_labels() {
+
+    re="^manager[0-9]$|^swarm[1-9]$"
+    eval $(docker-machine env manager0)
+    for machine in `docker-machine ls -q`
+    do
+        if [[ $machine =~ $re ]];
+        then
+            docker node update --label-add machine=common $machine
+        fi
+    done
+}
+
 #Add own docker daemon as a manager!
 add_self() {
 
-    TOKEN=$(docker-machine ssh manager0 -- docker swarm join-token manager -q)
+    TOKEN=$(docker-machine ssh manager0 -- docker swarm join-token worker -q)
     ADDR=$(docker-machine ip manager0):2377
     docker swarm join --token $TOKEN $ADDR
 }
@@ -77,6 +82,8 @@ then
         echo "error: Not a number or not betwen 1-9 inclusively" >&2; exit 1
     else
         create_swarm $2
+        echo "Adding Labels to swarm nodes"
+        add_labels
     fi
 elif [[ $1 == "rm" ]];
 then
